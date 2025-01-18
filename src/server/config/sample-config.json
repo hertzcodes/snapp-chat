@@ -1,0 +1,16 @@
+{
+    "server":{
+        "host": "",
+        "port": 8080
+    },
+
+    "database": {
+        "host": "", 
+        "port": 5432,
+        "user": "",
+        "password": "",
+        "database": "",
+        "shecma": ""
+    }
+    
+}
