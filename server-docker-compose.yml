@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  snapp-chat-server:
+    container_name: snapp-chat
+    restart: on-failure
+    build:
+      context: ./src/server
+      dockerfile: Dockerfile
+    volumes: 
+      ./src/server/config.json:/app/config.json:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    command: ["./app" ,"--config" ,"/app/config.json"]
+
+  postgres:
+    container_name: snapp-chat-database
+    image: postgres:13-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${PG_USERNAME}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: snapp_chat
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USERNAME}"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  nats:
+    container_name: snapp-chat-nats
+    image: nats:latest
+    ports:
+      - "4222:4222"
+    volumes:
+      - ./nats-server.conf:/etc/nats/nats-server.conf 
+    networks:
+      - app-network
+    command: ["nats-server", "-c", "/etc/nats/nats-server.conf"]
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  nats_data:
