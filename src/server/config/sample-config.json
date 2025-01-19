@@ -10,7 +10,7 @@
         "user": "",
         "password": "",
         "database": "",
-        "shecma": ""
+        "schema": ""
     }
     
 }
