@@ -10,7 +10,11 @@
         "user": "",
         "password": "",
         "database": "",
-        "shecma": ""
+        "schema": ""
+    }, 
+    "nats": {
+        "host": "nats://localhost",
+        "port": 4222
     }
     
 }

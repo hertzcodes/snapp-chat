@@ -9,6 +9,7 @@ import (
 type Config struct {
 	Server ServerConfig `json:"server"`
 	DB     DBConfig     `json:"database"`
+	Nats   NatsConfig   `json:"nats"`
 }
 
 type ServerConfig struct {
@@ -23,6 +24,11 @@ type DBConfig struct {
 	Schema   string `json:"schema"`
 	User     string `json:"user"`
 	Password string `json:"password"`
+}
+
+type NatsConfig struct {
+	Host string `json:"host"`
+	Port uint   `json:"port"`
 }
 
 func ReadConfig(configPath string) (Config, error) {
