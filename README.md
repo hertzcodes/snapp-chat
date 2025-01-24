@@ -1,7 +1,5 @@
 # Snapp Chat
 
-## Description
-
 Snapp Chat is a real-time chatroom application built using Go (version 1.22.0). It leverages NATS JetStream for messaging and PostgreSQL for data storage. The project consists of a client and server, allowing users to communicate seamlessly in a chatroom environment.
 
 ## Features
