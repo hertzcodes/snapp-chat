@@ -5,13 +5,16 @@ import (
 
 	"github.com/hertzcodes/snapp-chat/server/config"
 	"github.com/hertzcodes/snapp-chat/server/internal/adapters/postgres"
+	"github.com/hertzcodes/snapp-chat/server/internal/adapters/storage"
 	"github.com/hertzcodes/snapp-chat/server/internal/adapters/storage/entities"
+	"github.com/hertzcodes/snapp-chat/server/internal/api/handlers/service"
 	"gorm.io/gorm"
 )
 
 type app struct {
-	db  *gorm.DB
-	cfg config.Config
+	db          *gorm.DB
+	cfg         config.Config
+	userService *service.UserService
 }
 
 func (a *app) DB() *gorm.DB {
@@ -20,6 +23,14 @@ func (a *app) DB() *gorm.DB {
 
 func (a *app) Config() config.Config {
 	return a.cfg
+}
+
+func (a *app) UserService() *service.UserService {
+	return a.userService
+}
+
+func (a *app) setUserService() {
+	a.userService = service.NewUserService(*storage.NewUserRepo(a.db))
 }
 
 func migrate(db *gorm.DB) error {
@@ -63,6 +74,8 @@ func NewApp(cfg config.Config) (App, error) {
 	if err := a.setDB(); err != nil {
 		return nil, err
 	}
+
+	a.setUserService()
 
 	return a, nil
 }
