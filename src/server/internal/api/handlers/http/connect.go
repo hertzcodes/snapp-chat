@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -29,6 +30,8 @@ var (
 	AnnNewDay         string = "\n	%s\n"
 )
 
+var mu sync.Mutex
+
 func Connect(appContainer app.App, js nats.JetStreamContext, rooms map[string]uint) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -41,11 +44,14 @@ func Connect(appContainer app.App, js nats.JetStreamContext, rooms map[string]ui
 		username := r.Header.Get("username")
 		room := r.Header.Get("room")
 
+		mu.Lock()
 		rooms[room]++
+		mu.Unlock()
+
 		defer func() {
-			fmt.Println(rooms)
+			mu.Lock()
 			rooms[room]--
-			fmt.Println(rooms)
+			mu.Unlock()
 		}()
 		// subscribes to a jetstream subject
 		sub, err := js.Subscribe(fmt.Sprintf("SnappChat.%s", room), func(m *nats.Msg) {
@@ -74,7 +80,7 @@ func Connect(appContainer app.App, js nats.JetStreamContext, rooms map[string]ui
 		}
 
 		// reading connection messages and publish
-		go func() {
+		func() {
 			publish(js, room, Message{User: "server", Data: []byte(fmt.Sprintf(AnnJoinedChat, tt.GetTime(true), username))})
 
 			defer sub.Unsubscribe() // unsubscribe if function dies
@@ -110,7 +116,6 @@ func Connect(appContainer app.App, js nats.JetStreamContext, rooms map[string]ui
 				}
 			}
 		}()
-		select {} // I know...
 	}
 }
 
