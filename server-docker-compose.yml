@@ -8,12 +8,12 @@ services:
       context: ./src/server
       dockerfile: Dockerfile
     volumes: 
-      ./src/server/config.json:/app/config.json:ro
+      - ./src/server/config.json:/app/config.json:ro
     ports:
       - "8080:8080"
     networks:
       - app-network
-    command: ["./app" ,"--config" ,"/app/config.json"]
+    command: ["./server" ,"--config" ,"/app/config.json"]
 
   postgres:
     container_name: snapp-chat-database
@@ -44,7 +44,7 @@ services:
       - ./nats-server.conf:/etc/nats/nats-server.conf 
     networks:
       - app-network
-    command: ["nats-server", "-c", "/etc/nats/nats-server.conf"]
+    command: ["-c", "/etc/nats/nats-server.conf"]
 
 networks:
   app-network:

@@ -10,7 +10,8 @@
     
     FROM alpine:3.19
     WORKDIR /app
-    
+    RUN apk add --no-cache tzdata
+    ENV TZ=Asia/Tehran    
     COPY --from=builder /app/server    .
     
     CMD ["./server"]
