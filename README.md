@@ -23,3 +23,7 @@ Snapp Chat is a real-time chatroom application built using Go (version 1.22.0). 
 - Download the client from [releases page](https://github.com/hertzcodes/snapp-chat/releases/)
 - Run the server using `docker-compose -f server-docker-compose.yml up` in the project directory
 - You can also download a NATs server and run `nats-server-c nats-server.conf` & then run the binary version of the server in the [releases page](https://github.com/hertzcodes/snapp-chat/releases/). Make sure you have your Postgresql database set. 
+
+## Commands
+- `#users` shows the online user count inside a room 
+- `#leave` lets you leave from the current room 
